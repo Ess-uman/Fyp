@@ -1,0 +1,30 @@
+{
+  "expo": {
+    "name": "Titi",
+    "slug": "Titi",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./App/assets/welcomelogo.jpg",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./App/assets/Tractor.jpg",
+      "resizeMode": "contain",
+      "backgroundColor": "#ffffff"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./App/assets/icon.png",
+        "backgroundColor": "#ffffff"
+      }
+    },
+    "web": {
+      "favicon": "./App/assets/favicon.png"
+    }
+  }
+}

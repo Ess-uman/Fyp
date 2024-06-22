@@ -82,7 +82,7 @@ const EquipmentDetailScreen: React.FC = () => {
             <FlatList
               data={equipmentOptions}
               renderItem={renderOption}
-              keyExtractor={(item) => item.value}
+              keyExtractor={(item) => item.value
             />
           </View>
         </Modal>

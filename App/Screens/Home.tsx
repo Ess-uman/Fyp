@@ -1,6 +1,7 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { FlatList, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import { FlatList, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { SearchBar } from 'react-native-elements';
 import { RootStackParamList } from './Navigation/navigationTypes';
 
 type HomeScreenNavigationProp = NavigationProp<RootStackParamList, 'Home'>;
@@ -15,62 +16,83 @@ const equipmentCategories = [
 ];
 
 const equipmentItems = [
-  { id: '1', title: 'JohnDeere 1025R', category: 'Tractors', image: require('./assets/John Deere 1025R.png'), cost: '$150/day', hirerInfo: 'John Doe', contact: '123-456-7890' },
-  { id: '2', title: 'Case IH 8240', category: 'Harvesters', image: require('./assets/Case IH 8240.png'), cost: '$200/day', hirerInfo: 'Jane Smith', contact: '098-765-4321' },
-  { id: '3', title: 'Kuhn Master 153', category: 'Plows', image: require('./assets/Kuhn Master 153.png'), cost: '$100/day', hirerInfo: 'Richard Roe', contact: '555-555-5555' },
-  { id: '4', title: 'Hardi Navigator', category: 'Sprayers', image: require('./assets/Hardi Navigator.png'), cost: '$180/day', hirerInfo: 'Alice Johnson', contact: '444-444-4444' },
-  { id: '5', title: 'Rata Cultivator', category: 'Cultivators', image: require('./assets/cat.Cultivators.png'), cost: '$180/day', hirerInfo: 'Alice Johnson', contact: '444-444-4444' },
-  { id: '6', title: '328 Small Square Baler', category: 'Balers', image: require('./assets/328 Small Square Baler.png'), cost: '$180/day', hirerInfo: 'Alice Johnson', contact: '444-444-4444' },
-
+  { id: '1', title: 'JohnDeere 1025R', category: 'Tractors', image: require('./assets/John Deere 1025R.png'), cost: 'GHS 150/day', hirerInfo: 'Bekoe', contact: '024 300 0000' },
+  { id: '2', title: 'Case IH 8240', category: 'Harvesters', image: require('./assets/Case IH 8240.png'), cost: 'GHS 200/day', hirerInfo: 'Rab Ltd', contact: '024 300 0000' },
+  { id: '3', title: 'Kuhn Master 153', category: 'Plows', image: require('./assets/Kuhn Master 153.png'), cost: 'GHS 100/day', hirerInfo: 'Richard Odoi', contact: '024 300 0000' },
+  { id: '4', title: 'Hardi Navigator', category: 'Sprayers', image: require('./assets/Hardi Navigator.png'), cost: 'GHS 180/day', hirerInfo: 'BB ltd', contact: '024 300 0000' },
+  { id: '5', title: 'Rata Cultivator', category: 'Cultivators', image: require('./assets/cat.Cultivators.png'), cost: 'GHS 180/day', hirerInfo: 'Bernard Johnson', contact: '024 300 0000' },
+  { id: '6', title: '328 Small Square Baler', category: 'Balers', image: require('./assets/328 Small Square Baler.png'), cost: 'GHS 180/day', hirerInfo: 'Alex', contact: '024 300 0000' },
 ];
 
 const HomeScreen: React.FC = () => {
   const navigation = useNavigation<HomeScreenNavigationProp>();
+  const [search, setSearch] = useState('');
+  const [filteredItems, setFilteredItems] = useState(equipmentItems);
+
+  const updateSearch = (search: string) => {
+    setSearch(search);
+    if (search) {
+      const filteredData = equipmentItems.filter(item =>
+        item.title.toLowerCase().includes(search.toLowerCase())
+      );
+      setFilteredItems(filteredData);
+    } else {
+      setFilteredItems(equipmentItems);
+    }
+  };
 
   const renderCategoryItem = ({ item }: { item: typeof equipmentCategories[0] }) => (
-    <TouchableOpacity style={styles.categoryItem}>
+    <TouchableOpacity
+      key={item.id}
+      style={styles.categoryItem}
+      onPress={() => navigation.navigate('CategoryEquipment', { category: item.title })}
+    >
       <Image source={item.image} style={styles.categoryImage} />
       <Text style={styles.categoryTitle}>{item.title}</Text>
     </TouchableOpacity>
   );
 
-  const renderEquipmentItem = ({ item }: { item: typeof equipmentItems[0] }) => (
-    <TouchableOpacity
-      style={styles.equipmentItem}
-      onPress={() => navigation.navigate('EquipmentDetail', {
-        title: item.title,
-        image: item.image,
-        category: item.category,
-        cost: item.cost,
-        hirerInfo: item.hirerInfo,
-        contact: item.contact,
-      })}
-    >
-      <Image source={item.image} style={styles.equipmentImage} />
-      <Text style={styles.equipmentTitle}>{item.title}</Text>
-      <Text style={styles.equipmentCategory}>{item.category}</Text>
-    </TouchableOpacity>
-  );
-
   return (
     <View style={styles.screen}>
-      <Text style={styles.header}>Welcome to AgriRent</Text>
-      <Text style={styles.subHeader}>Rent the Best Farming Equipment</Text>
-
-      <FlatList
-        data={equipmentCategories}
-        renderItem={renderCategoryItem}
-        keyExtractor={item => item.id}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.categoryList}
+      <SearchBar
+        placeholder="Search Equipment"
+        onChangeText={updateSearch}
+        value={search}
+        containerStyle={styles.searchContainer}
+        inputContainerStyle={styles.searchInputContainer}
       />
 
-      <Text style={styles.sectionTitle}>Available Equipment</Text>
+      <View style={styles.categoryContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryList}>
+          {equipmentCategories.map(item => renderCategoryItem({ item }))}
+        </ScrollView>
+      </View>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      <Text>Home!</Text>
+    </View>
+
+      <Text style={styles.sectionTitle}>Most Rented</Text>
 
       <FlatList
-        data={equipmentItems}
-        renderItem={renderEquipmentItem}
+        data={filteredItems}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+            key={item.id}
+            style={styles.equipmentItem}
+            onPress={() => navigation.navigate('EquipmentDetail', {
+              title: item.title,
+              image: item.image,
+              category: item.category,
+              cost: item.cost,
+              hirerInfo: item.hirerInfo,
+              contact: item.contact,
+            })}
+          >
+            <Image source={item.image} style={styles.equipmentImage} />
+            <Text style={styles.equipmentTitle}>{item.title}</Text>
+            <Text style={styles.equipmentCategory}>{item.category}</Text>
+          </TouchableOpacity>
+        )}
         keyExtractor={item => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.equipmentList}
@@ -86,24 +108,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#F5F5F5',
     paddingTop: 40,
   },
-  header: {
-    fontSize: 26,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 30,
-    marginTop: 9,
-  },
-  subHeader: {
-    fontSize: 18,
-    textAlign: 'center',
+  searchContainer: {
+    backgroundColor: '#F5F5F5',
+    borderBottomColor: 'transparent',
+    borderTopColor: 'transparent',
     marginBottom: -5,
   },
+  searchInputContainer: {
+    backgroundColor: '#FFFFFF',
+    borderRadius: 20,
+  },
+  categoryContainer: {
+    height: 120,
+    marginBottom: 20,
+  },
   categoryList: {
-    paddingVertical: 50,
+    alignItems: 'center',
   },
   categoryItem: {
     alignItems: 'center',
-    marginRight: 45,
+    marginRight: 20,
   },
   categoryImage: {
     width: 60,
@@ -117,7 +141,6 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 22,
     fontWeight: 'bold',
-    marginTop: 20,
     marginBottom: 10,
   },
   equipmentList: {

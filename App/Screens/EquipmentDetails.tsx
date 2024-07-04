@@ -13,28 +13,38 @@ interface EquipmentOption {
 const EquipmentDetailScreen: React.FC = () => {
   const route = useRoute<EquipmentDetailScreenRouteProp>();
   const { title, image, category, cost, hirerInfo, contact } = route.params;
-  const [selectedEquipment, setSelectedEquipment] = useState<EquipmentOption>({ label: 'Select equipment', value: '' });
+  const [selectedEquipment, setSelectedEquipment] = useState<EquipmentOption | null>(null);
+  const [selectedType, setSelectedType] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
 
-  // Example data
-  const location = "123 Tool Street, Tooltown, TX 12345";
+  const location = "North Legon, Accra";
   const availability = "Pickup and Delivery available";
   const toolInfo = "This is a high-quality tool that is perfect for both professional and DIY projects. It is durable, reliable, and easy to use.";
   const terms = "The tool must be returned in the same condition it was rented. Late returns will incur an additional fee. Any damage to the tool will be assessed and charged accordingly.";
 
   const equipmentOptions: EquipmentOption[] = [
-    { label: 'Select equipment', value: '' },
-    { label: 'Drill', value: 'drill' },
-    { label: 'Saw', value: 'saw' },
-    { label: 'Ladder', value: 'ladder' },
-    { label: 'Pressure Washer', value: 'pressure_washer' },
+    { label: 'Tractor', value: 'Tractor' },
+    { label: 'Harvester', value: 'Harvester' },
+    { label: 'Baler', value: 'Baler' },
+    { label: 'Plow', value: 'Plow' },
+    { label: 'Sprayer', value: 'Sprayer' },
+    { label: 'Culvitator', value: 'Cultivator' },
   ];
 
+  const equipmentTypes: { [key: string]: string[] } = {
+    Tractor: ['Type A', 'Type B', 'Type C'],
+    Harvester: ['Type X', 'Type Y', 'Type Z'],
+    Baler: ['Type M', 'Type N', 'Type O'],
+    Plow: ['Type P', 'Type Q', 'Type R'],
+    Sprayer: ['Type H', 'Type I', 'Type J'],
+    Cultivator: ['Type W1', 'Type W2', 'Type W3'],
+  };
+
   const handleHireNow = () => {
-    if (selectedEquipment.value) {
-      alert(`Hiring ${selectedEquipment.label}`);
+    if (selectedEquipment && selectedType) {
+      alert(`Renting ${selectedEquipment.label} - ${selectedType}`);
     } else {
-      alert('Please select equipment before hiring');
+      alert('Please select equipment and type before Renting');
     }
   };
 
@@ -43,6 +53,7 @@ const EquipmentDetailScreen: React.FC = () => {
       style={styles.option}
       onPress={() => {
         setSelectedEquipment(item);
+        setSelectedType(null);
         setModalVisible(false);
       }}
     >
@@ -50,13 +61,25 @@ const EquipmentDetailScreen: React.FC = () => {
     </TouchableOpacity>
   );
 
+  const renderType = (type: string) => (
+    <TouchableOpacity
+      style={styles.typeOption}
+      onPress={() => setSelectedType(type)}
+    >
+      <View style={styles.checkbox}>
+        {selectedType === type && <View style={styles.checkedCircle} />}
+      </View>
+      <Text>{type}</Text>
+    </TouchableOpacity>
+  );
+
   return (
-    <ScrollView style={styles.screen}>
+    <ScrollView contentContainerStyle={styles.screen}>
       <View style={styles.box}>
         <Image source={image} style={styles.image} />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.category}>{category}</Text>
-        <Text style={styles.cost}>Cost to hire: {cost}</Text>
+        <Text style={styles.cost}>Cost to Rent: {cost}</Text>
         <Text style={styles.hirerInfo}>Hirer's Info: {hirerInfo}</Text>
         <Text style={styles.contact}>Contact: {contact}</Text>
         <Text style={styles.location}>Location: {location}</Text>
@@ -69,7 +92,7 @@ const EquipmentDetailScreen: React.FC = () => {
           style={styles.pickerContainer}
           onPress={() => setModalVisible(true)}
         >
-          <Text>{selectedEquipment.label}</Text>
+          <Text>{selectedEquipment ? selectedEquipment.label : 'Select equipment'}</Text>
         </TouchableOpacity>
 
         <Modal
@@ -79,20 +102,40 @@ const EquipmentDetailScreen: React.FC = () => {
           onRequestClose={() => setModalVisible(false)}
         >
           <View style={styles.modalView}>
-            <FlatList
-              data={equipmentOptions}
-              renderItem={renderOption}
-              keyExtractor={(item) => item.value}
+            <TouchableOpacity
+              style={styles.modalBackdrop}
+              onPress={() => setModalVisible(false)}
             />
+            <View style={styles.modalContent}>
+              <FlatList
+                data={equipmentOptions}
+                renderItem={({ item }) => renderOption({ item })}
+                keyExtractor={(item) => item.value}
+                style={{ flexGrow: 1, width: '100%' }}
+              />
+            </View>
           </View>
         </Modal>
 
+        {/* Render equipment types based on selected equipment */}
+        {selectedEquipment && (
+          <View style={styles.typeContainer}>
+            <Text style={styles.pickerLabel}>Select Type:</Text>
+            <FlatList
+              data={equipmentTypes[selectedEquipment.value]}
+              renderItem={({ item }) => renderType(item)}
+              keyExtractor={(item, index) => `${item}-${index}`}
+              style={styles.typeList}
+            />
+          </View>
+        )}
+
         <TouchableOpacity
-          style={[styles.button, !selectedEquipment.value && styles.disabledButton]}
+          style={[styles.button, (!selectedEquipment || !selectedType) && styles.disabledButton]}
           onPress={handleHireNow}
-          disabled={!selectedEquipment.value}
+          disabled={!selectedEquipment || !selectedType}
         >
-          <Text style={styles.buttonText}>Hire Now</Text>
+          <Text style={styles.buttonText}>Rent Now</Text>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -101,7 +144,7 @@ const EquipmentDetailScreen: React.FC = () => {
 
 const styles = StyleSheet.create({
   screen: {
-    flex: 1,
+    flexGrow: 1,
     padding: 20,
     backgroundColor: '#FFF',
   },
@@ -111,7 +154,6 @@ const styles = StyleSheet.create({
     borderColor: '#DDD',
     borderRadius: 10,
     padding: 15,
-    backgroundColor: '#F9F9F9',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.2,
@@ -169,6 +211,7 @@ const styles = StyleSheet.create({
     padding: 10,
     borderRadius: 5,
     alignItems: 'center',
+    marginBottom: 20,
   },
   buttonText: {
     color: '#FFF',
@@ -183,30 +226,73 @@ const styles = StyleSheet.create({
   pickerContainer: {
     borderWidth: 1,
     borderColor: '#DDD',
-    borderRadius: 5,
-    padding: 10,
+    borderRadius: 10,
+    padding: 15,
     marginBottom: 20,
+    alignItems: 'center',
   },
   modalView: {
-    margin: 20,
-    backgroundColor: "white",
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalBackdrop: {
+    flex: 1,
+    width: '100%',
+    backgroundColor: 'transparent',
+  },
+  modalContent: {
+    backgroundColor: 'white',
     borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2
-    },
+    padding: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
+    maxHeight: 150,
+    width: '80%',
   },
   option: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#DDD',
     width: '100%',
+  },
+  typeContainer: {
+    marginBottom: 20,
+  },
+  typeList: {
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 10,
+    maxHeight: 150,
+  },
+  typeOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor:'#DDD',
+    width: '100%',
+  },
+  checkbox: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth:1,
+    borderColor: '#5AE4A8',
+    marginRight: 10,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  checkedCircle: {
+    width: 14,
+    height: 14,
+    borderRadius: 7,
+    backgroundColor: '#5AE4A8',
   },
   disabledButton: {
     backgroundColor: '#ccc',

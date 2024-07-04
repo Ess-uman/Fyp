@@ -20,7 +20,7 @@ const LoginScreen: React.FC = () => {
     })
     .then(() => {
       alert("Login successful! 🎉");
-      navigation.navigate('Home'); // Navigate to the Home screen or any other screen
+      navigation.navigate('AppNavigator');
     })
     .catch((err: any) => {
       alert(err.message);

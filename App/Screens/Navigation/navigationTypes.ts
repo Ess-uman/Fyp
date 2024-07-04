@@ -6,7 +6,9 @@ export type RootStackParamList = {
   Welcome: undefined;
   ResetPassword: undefined;
   Home: undefined;
-    EquipmentDetail: {
+  category: undefined;
+  CategoryEquipment: { category: string };
+  EquipmentDetail: {
       title: string;
       image: any;
       category: string;

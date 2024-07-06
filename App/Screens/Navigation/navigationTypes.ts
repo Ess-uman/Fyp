@@ -7,6 +7,8 @@ export type RootStackParamList = {
   ResetPassword: undefined;
   Home: undefined;
   category: undefined;
+  settings:undefined;
+  RentDatePicker:undefined;
   CategoryEquipment: { category: string };
   EquipmentDetail: {
       title: string;

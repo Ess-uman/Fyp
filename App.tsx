@@ -1,9 +1,9 @@
-// App.tsx
+
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import * as React from 'react';
 import AppNavigator from './App/Screens/AppNavigator';
-import LoginScreen from './App/Screens/login';
+import LoginScreen from './App/Screens/LoginScreen';
 import ResetPassword from './App/Screens/ResetPassword';
 import SignupScreen from './App/Screens/SignupScreen';
 import SplashScreen from './App/Screens/SplashScreen';

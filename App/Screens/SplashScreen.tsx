@@ -2,7 +2,7 @@
 import { NavigationProp, useNavigation } from '@react-navigation/native';
 import React from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { RootStackParamList } from '../Navigation/navigationTypes';
+import { RootStackParamList } from './Navigation/navigationTypes';
 
 type SplashScreenNavigationProp = NavigationProp<RootStackParamList, 'Login'>;
 

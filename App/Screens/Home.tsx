@@ -54,22 +54,22 @@ const HomeScreen: React.FC = () => {
 
   return (
     <View style={styles.screen}>
-      <SearchBar
-        placeholder="Search Equipment"
-        onChangeText={updateSearch}
-        value={search}
-        containerStyle={styles.searchContainer}
-        inputContainerStyle={styles.searchInputContainer}
-      />
+      <View style={styles.topContainer}>
+        <Text style={styles.findEquipmentText}>Find Equipment</Text>
+        <SearchBar
+          placeholder="Search Equipment"
+          onChangeText={updateSearch}
+          value={search}
+          containerStyle={styles.searchContainer}
+          inputContainerStyle={styles.searchInputContainer}
+        />
+      </View>
 
       <View style={styles.categoryContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryList}>
           {equipmentCategories.map(item => renderCategoryItem({ item }))}
         </ScrollView>
       </View>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      <Text>Home!</Text>
-    </View>
 
       <Text style={styles.sectionTitle}>Most Rented</Text>
 
@@ -104,15 +104,26 @@ const HomeScreen: React.FC = () => {
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    padding: 20,
     backgroundColor: '#F5F5F5',
-    paddingTop: 40,
+  },
+  topContainer: {
+    backgroundColor: '#5AE4A8',
+    padding: 20,
+    paddingTop: 100,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
+  },
+  findEquipmentText: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FFFFFF',
+    marginBottom: 10,
   },
   searchContainer: {
-    backgroundColor: '#F5F5F5',
+    backgroundColor: 'transparent',
     borderBottomColor: 'transparent',
     borderTopColor: 'transparent',
-    marginBottom: -5,
+    paddingHorizontal: 0,
   },
   searchInputContainer: {
     backgroundColor: '#FFFFFF',
@@ -120,14 +131,15 @@ const styles = StyleSheet.create({
   },
   categoryContainer: {
     height: 120,
-    marginBottom: 20,
+    marginVertical: 20,
   },
   categoryList: {
     alignItems: 'center',
   },
   categoryItem: {
     alignItems: 'center',
-    marginRight: 20,
+    marginRight: -5,
+    marginLeft: 20,
   },
   categoryImage: {
     width: 60,
@@ -142,8 +154,10 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
+    paddingHorizontal: 20,
   },
   equipmentList: {
+    paddingHorizontal: 20,
     paddingBottom: 20,
   },
   equipmentItem: {

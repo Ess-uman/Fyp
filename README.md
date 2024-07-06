@@ -14,7 +14,4 @@ Navigation: Utilizes React Navigation for seamless navigation between different 
 
                                                Technologies Used
 Frontend: React Native, TypeScript, React Navigation
-UI Components: React Native Elements (for UI components, though later removed for customization)
-Data Handling: JavaScript ES6, state management with React hooks
-Version Control: Git, GitHub
->>>>>>> b4ba7e6763c51319a9df44b2aaac2e38bb8a1968
+Backend: Firebase

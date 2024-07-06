@@ -14,4 +14,6 @@ Navigation: Utilizes React Navigation for seamless navigation between different 
 
                                                Technologies Used
 Frontend: React Native, TypeScript, React Navigation
+
+
 Backend: Firebase

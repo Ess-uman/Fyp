@@ -1,103 +1,392 @@
-import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
+import React, { useState } from 'react';
+import {
+  Image,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Switch,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
-const SettingsScreen: React.FC = () => {
-  const [notificationEnabled, setNotificationEnabled] = React.useState(true);
-  const [darkModeEnabled, setDarkModeEnabled] = React.useState(false);
-  const navigation = useNavigation();
-
-  const handleNotificationToggle = () => {
-    setNotificationEnabled(!notificationEnabled);
-  };
-
-  const handleDarkModeToggle = () => {
-    setDarkModeEnabled(!darkModeEnabled);
-  };
-
-  const handleLogout = () => {
-    // Implement logout functionality here
-  };
-
-  const handleEditProfile = () => {
-    navigation.navigate('Profile'); // Navigate to ProfileScreen
-  };
+export default function Example() {
+  const [form, setForm] = useState({
+    emailNotifications: true,
+    pushNotifications: false,
+  });
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Settings</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#f8f8f8' }}>
+      <View style={styles.header}>
+        <View style={styles.headerAction}>
+          <TouchableOpacity
+            onPress={() => {
+              // handle onPress
+            }}>
+            <FeatherIcon
+              color="#000"
+              name="arrow-left"
+              size={24} />
+          </TouchableOpacity>
+        </View>
 
-      <TouchableOpacity style={styles.optionContainer} onPress={handleEditProfile}>
-        <Text style={styles.optionText}>Edit Profile</Text>
-      </TouchableOpacity>
+        <Text numberOfLines={1} style={styles.headerTitle}>
+          Settings
+        </Text>
 
-      <TouchableOpacity style={styles.optionContainer}>
-        <Text style={styles.optionText}>Notification Settings</Text>
-        <Switch
-          value={notificationEnabled}
-          onValueChange={handleNotificationToggle}
-          trackColor={{ false: '#767577', true: '#5AE4A8' }}
-          thumbColor={notificationEnabled ? '#fff' : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-        />
-      </TouchableOpacity>
+        <View style={[styles.headerAction, { alignItems: 'flex-end' }]}>
+          <TouchableOpacity
+            onPress={() => {
+              // handle onPress
+            }}>
+            <FeatherIcon
+              color="#000"
+              name="more-vertical"
+              size={24} />
+          </TouchableOpacity>
+        </View>
+      </View>
 
-      <TouchableOpacity style={styles.optionContainer}>
-        <Text style={styles.optionText}>Language & Region</Text>
-      </TouchableOpacity>
+      <ScrollView contentContainerStyle={styles.content}>
+        <View style={[styles.section, { paddingTop: 4 }]}>
+          <Text style={styles.sectionTitle}>Account</Text>
 
-      <TouchableOpacity style={styles.optionContainer}>
-        <Text style={styles.optionText}>Privacy & Security</Text>
-      </TouchableOpacity>
+          <View style={styles.sectionBody}>
+            <TouchableOpacity
+              onPress={() => {
+                // handle onPress
+              }}
+              style={styles.profile}>
+              <Image
+                alt=""
+                source={{
+                  uri: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=facearea&facepad=2.5&w=256&h=256&q=80',
+                }}
+                style={styles.profileAvatar} />
 
-      <TouchableOpacity style={styles.optionContainer}>
-        <Text style={styles.optionText}>App Theme</Text>
-        <Switch
-          value={darkModeEnabled}
-          onValueChange={handleDarkModeToggle}
-          trackColor={{ false: '#767577', true: '#5AE4A8' }}
-          thumbColor={darkModeEnabled ? '#fff' : '#f4f3f4'}
-          ios_backgroundColor="#3e3e3e"
-        />
-      </TouchableOpacity>
+              <View style={styles.profileBody}>
+                <Text style={styles.profileName}>John Doe</Text>
 
-      <TouchableOpacity style={styles.optionContainer}>
-        <Text style={styles.optionText}>Contact Support</Text>
-      </TouchableOpacity>
+                <Text style={styles.profileHandle}>john@example.com</Text>
+              </View>
 
-      <TouchableOpacity style={[styles.optionContainer, styles.logoutButton]} onPress={handleLogout}>
-        <Text style={[styles.optionText, { color: '#FF6347' }]}>Logout</Text>
-      </TouchableOpacity>
-    </View>
+              <FeatherIcon
+                color="#bcbcbc"
+                name="chevron-right"
+                size={22} />
+            </TouchableOpacity>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Preferences</Text>
+
+          <View style={styles.sectionBody}>
+            <View style={[styles.rowWrapper, styles.rowFirst]}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+                style={styles.row}>
+                <Text style={styles.rowLabel}>Language</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <Text style={styles.rowValue}>English</Text>
+
+                <FeatherIcon
+                  color="#bcbcbc"
+                  name="chevron-right"
+                  size={19} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.rowWrapper}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+                style={styles.row}>
+                <Text style={styles.rowLabel}>Location</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <Text style={styles.rowValue}>Los Angeles, CA</Text>
+
+                <FeatherIcon
+                  color="#bcbcbc"
+                  name="chevron-right"
+                  size={19} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.rowWrapper}>
+              <View style={styles.row}>
+                <Text style={styles.rowLabel}>Email Notifications</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <Switch
+                  onValueChange={emailNotifications =>
+                    setForm({ ...form, emailNotifications })
+                  }
+                  style={{ transform: [{ scaleX: 0.95 }, { scaleY: 0.95 }] }}
+                  value={form.emailNotifications} />
+              </View>
+            </View>
+
+            <View style={[styles.rowWrapper, styles.rowLast]}>
+              <View style={styles.row}>
+                <Text style={styles.rowLabel}>Push Notifications</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <Switch
+                  onValueChange={pushNotifications =>
+                    setForm({ ...form, pushNotifications })
+                  }
+                  style={{ transform: [{ scaleX: 0.95 }, { scaleY: 0.95 }] }}
+                  value={form.pushNotifications} />
+              </View>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Resources</Text>
+
+          <View style={styles.sectionBody}>
+            <View style={[styles.rowWrapper, styles.rowFirst]}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+                style={styles.row}>
+                <Text style={styles.rowLabel}>Contact Us</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <FeatherIcon
+                  color="#bcbcbc"
+                  name="chevron-right"
+                  size={19} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.rowWrapper}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+                style={styles.row}>
+                <Text style={styles.rowLabel}>Report Bug</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <FeatherIcon
+                  color="#bcbcbc"
+                  name="chevron-right"
+                  size={19} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.rowWrapper}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+                style={styles.row}>
+                <Text style={styles.rowLabel}>Rate in App Store</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <FeatherIcon
+                  color="#bcbcbc"
+                  name="chevron-right"
+                  size={19} />
+              </TouchableOpacity>
+            </View>
+
+            <View style={[styles.rowWrapper, styles.rowLast]}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+                style={styles.row}>
+                <Text style={styles.rowLabel}>Terms and Privacy</Text>
+
+                <View style={styles.rowSpacer} />
+
+                <FeatherIcon
+                  color="#bcbcbc"
+                  name="chevron-right"
+                  size={19} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <View style={styles.sectionBody}>
+            <View
+              style={[
+                styles.rowWrapper,
+                styles.rowFirst,
+                styles.rowLast,
+                { alignItems: 'center' },
+              ]}>
+              <TouchableOpacity
+                onPress={() => {
+                  // handle onPress
+                }}
+                style={styles.row}>
+                <Text style={[styles.rowLabel, styles.rowLabelLogout]}>
+                  Log Out
+                </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+
+        <Text style={styles.contentFooter}>App Version 2.24 #50491</Text>
+      </ScrollView>
+    </SafeAreaView>
   );
-};
+}
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 20,
-    paddingTop: 100,
+  /** Header */
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    width: '100%',
+    paddingHorizontal: 16,
+  },
+  headerAction: {
+    width: 40,
+    height: 40,
+    alignItems: 'flex-start',
+    justifyContent: 'center',
+  },
+  headerTitle: {
+    fontSize: 19,
+    fontWeight: '600',
+    color: '#000',
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+    textAlign: 'center',
+  },
+  /** Content */
+  content: {
+    paddingHorizontal: 16,
+  },
+  contentFooter: {
+    marginTop: 24,
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'center',
+    color: '#a69f9f',
+  },
+  /** Section */
+  section: {
+    paddingVertical: 12,
   },
   sectionTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 30,
+    margin: 8,
+    marginLeft: 12,
+    fontSize: 13,
+    letterSpacing: 0.33,
+    fontWeight: '500',
+    color: '#a69f9f',
+    textTransform: 'uppercase',
   },
-  optionContainer: {
+  sectionBody: {
+    borderRadius: 12,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.41,
+    elevation: 2,
+  },
+  /** Profile */
+  profile: {
+    padding: 12,
+    backgroundColor: '#fff',
+    borderRadius: 12,
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingVertical: 15,
-    borderBottomWidth: 1.,
-    borderBottomColor: '#EFEFEF',
+    justifyContent: 'flex-start',
   },
-  optionText: {
+  profileAvatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 9999,
+    marginRight: 12,
+  },
+  profileBody: {
+    marginRight: 'auto',
+  },
+  profileName: {
     fontSize: 18,
+    fontWeight: '600',
+    color: '#292929',
   },
-  logoutButton: {
-    marginTop: 20,
+  profileHandle: {
+    marginTop: 2,
+    fontSize: 16,
+    fontWeight: '400',
+    color: '#858585',
+  },
+  /** Row */
+  row: {
+    height: 44,
+    width: '100%',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'flex-start',
+    paddingRight: 12,
+  },
+  rowWrapper: {
+    paddingLeft: 16,
+    backgroundColor: '#fff',
+    borderTopWidth: 1,
+    borderColor: '#f0f0f0',
+  },
+  rowFirst: {
+    borderTopLeftRadius: 12,
+    borderTopRightRadius: 12,
+  },
+  rowLabel: {
+    fontSize: 16,
+    letterSpacing: 0.24,
+    color: '#000',
+  },
+  rowSpacer: {
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+  },
+  rowValue: {
+    fontSize: 16,
+    fontWeight: '500',
+    color: '#ababab',
+    marginRight: 4,
+  },
+  rowLast: {
+    borderBottomLeftRadius: 12,
+    borderBottomRightRadius: 12,
+  },
+  rowLabelLogout: {
+    width: '100%',
+    textAlign: 'center',
+    fontWeight: '600',
+    color: '#dc2626',
   },
 });
-
-export default SettingsScreen;

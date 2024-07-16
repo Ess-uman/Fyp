@@ -1,112 +1,221 @@
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
-import 'firebase/auth';
 import { createUserWithEmailAndPassword } from 'firebase/auth';
 import React, { useState } from 'react';
-import { StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { SafeAreaView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import { auth } from '../Firebase/FirebaseConfig';
-import { RootStackParamList } from './Navigation/navigationTypes'; // Adjust the path according to your file structure
-
+import { RootStackParamList } from './Navigation/navigationTypes';
 type SignupScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Signup'>;
 
 const SignupScreen: React.FC = () => {
-  const [username, setUsername] = useState<string>('');
-  const [password, setPassword] = useState<string>('');
-  const [email, setEmail] = useState<string>('');
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
 
   const navigation = useNavigation<SignupScreenNavigationProp>();
 
   const handleSignup = async () => {
-    await createUserWithEmailAndPassword(auth, email.trim(), password)
-    .then((userCredential) => {
-      const user = userCredential.user;
-    })
-    .then(() => {
-      alert("Account created successfully 🎉");
-      navigation.navigate('Login');
-    })
-    .catch((err: any) => {
-      alert(err);
-    });
+    if (form.password !== form.confirmPassword) {
+      alert("Passwords do not match");
+      return;
+    }
+    await createUserWithEmailAndPassword(auth, form.email.trim(), form.password)
+      .then((userCredential) => {
+        const user = userCredential.user;
+      })
+      .then(() => {
+        alert("Account created successfully 🎉");
+        navigation.navigate('Login');
+      })
+      .catch((err: any) => {
+        alert(err);
+      });
   };
- function SignupScreen(){}
+
   return (
-    <View style={styles.screen}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#e8ecf4' }}>
       <View style={styles.container}>
-        <Text style={styles.title}>Create an Account</Text>
-
-        <Text style={styles.label}>Email</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your email"
-          value={email}
-          onChangeText={(text) => setEmail(text)}
-          keyboardType="email-address"
-        />
-        <Text style={styles.label}>Username</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your username"
-          value={username}
-          onChangeText={(text) => setUsername(text)}
-        />
-
-        <Text style={styles.label}>Password</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="Enter your password"
-          value={password}
-          onChangeText={(text) => setPassword(text)}
-          secureTextEntry
-        />
-
-        <TouchableOpacity style={styles.button} onPress={handleSignup}>
-          <Text style={styles.buttonText}>Sign Up</Text>
+        <KeyboardAwareScrollView>
+          <View style={styles.header}>
+            <View style={styles.headerBack}>
+              <FeatherIcon
+                color="#1D2A32"
+                name="chevron-left"
+                size={30}
+                onPress={() => navigation.goBack()} // Go back on press
+              />
+            </View>
+            <Text style={styles.title}>Let's Get Started!</Text>
+            <Text style={styles.subtitle}>
+              Fill in the fields below to get started with your new account.
+            </Text>
+          </View>
+          <View style={styles.form}>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Full Name</Text>
+              <TextInput
+                clearButtonMode="while-editing"
+                onChangeText={name => setForm({ ...form, name })}
+                placeholder="John Doe"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                value={form.name}
+              />
+            </View>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Email Address</Text>
+              <TextInput
+                autoCapitalize="none"
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                keyboardType="email-address"
+                onChangeText={email => setForm({ ...form, email })}
+                placeholder="john@example.com"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                value={form.email}
+              />
+            </View>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Password</Text>
+              <TextInput
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                onChangeText={password => setForm({ ...form, password })}
+                placeholder="********"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                secureTextEntry={true}
+                value={form.password}
+              />
+            </View>
+            <View style={styles.input}>
+              <Text style={styles.inputLabel}>Confirm Password</Text>
+              <TextInput
+                autoCorrect={false}
+                clearButtonMode="while-editing"
+                onChangeText={confirmPassword => setForm({ ...form, confirmPassword })}
+                placeholder="********"
+                placeholderTextColor="#6b7280"
+                style={styles.inputControl}
+                secureTextEntry={true}
+                value={form.confirmPassword}
+              />
+            </View>
+            <View style={styles.formAction}>
+              <TouchableOpacity onPress={handleSignup}>
+                <View style={styles.btn}>
+                  <Text style={styles.btnText}>Get Started</Text>
+                </View>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </KeyboardAwareScrollView>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('Login')}
+          style={{ marginTop: 'auto' }}
+        >
+          <Text style={styles.formFooter}>
+            Already have an account? <Text style={{ textDecorationLine: 'underline' }}>Sign in</Text>
+          </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 
-
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    justifyContent: 'center',
-    padding: 55,
+  container: {
+    paddingVertical: 24,
+    paddingHorizontal: 0,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
   },
   title: {
-    fontSize: 24,
-    fontWeight: 'bold',
+    fontSize: 31,
+    fontWeight: '700',
+    color: '#1D2A32',
+    marginBottom: 6,
+  },
+  subtitle: {
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#929292',
+  },
+  header: {
+    alignItems: 'flex-start',
+    justifyContent: 'flex-start',
+    marginBottom: 24,
+    paddingHorizontal: 24,
+  },
+  headerBack: {
+    padding: 8,
+    paddingTop: 0,
+    position: 'relative',
+    marginLeft: -16,
+    marginBottom: 6,
+  },
+  form: {
+    marginBottom: 24,
+    paddingHorizontal: 24,
+    flexGrow: 1,
+    flexShrink: 1,
+    flexBasis: 0,
+  },
+  formAction: {
+    marginTop: 4,
+    marginBottom: 16,
+  },
+  formFooter: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#222',
     textAlign: 'center',
-    marginBottom: 20,
-  },
-  container: {
-    justifyContent: 'center',
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 3,
+    letterSpacing: 0.15,
   },
   input: {
-    height: 60,
-    borderColor: '#000',
-    borderWidth: 0.5,
-    borderRadius: 15,
-    marginBottom: 20,
-    paddingLeft: 10,
+    marginBottom: 16,
   },
-  button: {
-    backgroundColor: '#5AE4A8',
-    borderRadius: 10,
+  inputLabel: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: '#222',
+    marginBottom: 8,
+  },
+  inputControl: {
     height: 50,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 20,
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    fontSize: 15,
+    fontWeight: '500',
+    color: '#222',
+    borderWidth: 1,
+    borderColor: '#C9D3DB',
+    borderStyle: 'solid',
   },
-  buttonText: {
-    color: 'white',
+  btn: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderWidth: 1,
+    backgroundColor: '#5AE4A8',
+    borderColor: '#5AE4A8',
+  },
+  btnText: {
     fontSize: 18,
+    lineHeight: 26,
+    fontWeight: '600',
+    color: '#fff',
   },
 });
 

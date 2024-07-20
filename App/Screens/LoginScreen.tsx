@@ -10,7 +10,7 @@ import {
   View,
 } from 'react-native';
 import { auth } from '../Firebase/FirebaseConfig';
-import { RootStackParamList } from './Navigation/navigationTypes'; // Adjust the path according to your file structure
+import { RootStackParamList } from './Navigation/navigationTypes';
 
 type LoginScreenNavigationProp = NavigationProp<RootStackParamList, 'Login'>;
 

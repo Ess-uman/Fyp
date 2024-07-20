@@ -1,6 +1,7 @@
-import { RouteProp, useRoute } from '@react-navigation/native';
+import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { useOrders } from './Context/OrdersContext';
 import { RootStackParamList } from './Navigation/navigationTypes';
 
 type EquipmentDetailScreenRouteProp = RouteProp<RootStackParamList, 'EquipmentDetail'>;
@@ -12,7 +13,9 @@ interface EquipmentOption {
 
 const EquipmentDetailScreen: React.FC = () => {
   const route = useRoute<EquipmentDetailScreenRouteProp>();
+  const navigation = useNavigation();
   const { title, image, category, cost, hirerInfo, contact } = route.params;
+  const { addOrder } = useOrders();
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentOption | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -42,7 +45,23 @@ const EquipmentDetailScreen: React.FC = () => {
 
   const handleHireNow = () => {
     if (selectedEquipment && selectedType) {
+      const newOrder = {
+        title,
+        image,
+        category,
+        cost,
+        hirerInfo,
+        contact,
+        location,
+        availability,
+        toolInfo,
+        terms,
+        equipment: selectedEquipment.label,
+        type: selectedType,
+      };
+      addOrder(newOrder);
       alert(`Renting ${selectedEquipment.label} - ${selectedType}`);
+      navigation.navigate('Orders');
     } else {
       alert('Please select equipment and type before Renting');
     }
@@ -117,7 +136,6 @@ const EquipmentDetailScreen: React.FC = () => {
           </View>
         </Modal>
 
-        {/* Render equipment types based on selected equipment */}
         {selectedEquipment && (
           <View style={styles.typeContainer}>
             <Text style={styles.pickerLabel}>Select Type:</Text>
@@ -204,86 +222,61 @@ const styles = StyleSheet.create({
   },
   terms: {
     fontSize: 16,
-    marginBottom: 20,
-  },
-  button: {
-    backgroundColor: '#5AE4A8',
-    padding: 10,
-    borderRadius: 5,
-    alignItems: 'center',
-    marginBottom: 20,
-  },
-  buttonText: {
-    color: '#FFF',
-    fontSize: 16,
-    fontWeight: 'bold',
+    marginBottom: 10,
   },
   pickerLabel: {
-    fontSize: 16,
-    fontWeight: 'bold',
+    fontSize: 18,
     marginBottom: 5,
   },
   pickerContainer: {
+    padding: 10,
     borderWidth: 1,
     borderColor: '#DDD',
-    borderRadius: 10,
-    padding: 15,
+    borderRadius: 5,
     marginBottom: 20,
-    alignItems: 'center',
   },
   modalView: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalBackdrop: {
-    flex: 1,
-    width: '100%',
-    backgroundColor: 'transparent',
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.5)',
   },
   modalContent: {
+    width: '80%',
     backgroundColor: 'white',
-    borderRadius: 20,
+    borderRadius: 10,
     padding: 20,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
     elevation: 5,
-    maxHeight: 150,
-    width: '80%',
   },
   option: {
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: '#DDD',
-    width: '100%',
   },
   typeContainer: {
-    marginBottom: 20,
+    marginTop: 20,
   },
   typeList: {
-    borderWidth: 1,
-    borderColor: '#DDD',
-    borderRadius: 10,
     maxHeight: 150,
   },
   typeOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor:'#DDD',
-    width: '100%',
+    marginBottom: 10,
   },
   checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
-    borderWidth:1,
-    borderColor: '#5AE4A8',
+    width: 20,
+    height: 20,
+    borderWidth: 1,
+    borderColor: '#888',
     marginRight: 10,
     justifyContent: 'center',
     alignItems: 'center',
@@ -292,10 +285,21 @@ const styles = StyleSheet.create({
     width: 14,
     height: 14,
     borderRadius: 7,
-    backgroundColor: '#5AE4A8',
+    backgroundColor: '#888',
+  },
+  button: {
+    backgroundColor: '#28a745',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
   },
   disabledButton: {
-    backgroundColor: '#ccc',
+    backgroundColor: '#CCC',
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
   },
 });
 

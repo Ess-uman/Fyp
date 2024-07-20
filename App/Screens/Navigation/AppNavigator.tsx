@@ -1,11 +1,11 @@
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import CategoryScreen from './CategoryEquipment';
-import EquipmentDetailScreen from './EquipmentDetails';
-import HomeScreen from './Home';
-import OrdersScreen from './OrdersScreen';
-import SettingsScreen from './SettingsScreen';
+import CategoryScreen from '../CategoryEquipment';
+import EquipmentDetailScreen from '../EquipmentDetails';
+import HomeScreen from '../Home';
+import OrdersScreen from '../NavBar/OrdersScreen';
+import SettingsScreen from '../NavBar/SettingsScreen';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();

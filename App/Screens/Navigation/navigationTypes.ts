@@ -9,6 +9,7 @@ export type RootStackParamList = {
   category: undefined;
   settings:undefined;
   RentDatePicker:undefined;
+  OrdersContext:undefined;
   CategoryEquipment: { category: string };
   EquipmentDetail: {
       title: string;
@@ -17,5 +18,6 @@ export type RootStackParamList = {
       cost: string;
       hirerInfo: string;
       contact: string;
+      Orders: string;
     };
   };

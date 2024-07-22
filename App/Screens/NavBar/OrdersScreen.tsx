@@ -1,13 +1,30 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Image, StyleSheet, Text, View } from 'react-native';
-import { useOrders } from '../Context/OrdersContext';
+import { fetchOrders, Order } from '../../api';
 
 const OrdersScreen: React.FC = () => {
-  const { orders } = useOrders();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const renderOrder = ({ item }: { item: any }) => (
+  useEffect(() => {
+    const getOrders = async () => {
+      try {
+        const response = await fetchOrders();
+        setOrders(response.data);
+        setLoading(false);
+      } catch (error) {
+        setError('Error fetching orders');
+        setLoading(false);
+      }
+    };
+
+    getOrders();
+  }, []);
+
+  const renderOrder = ({ item }: { item: Order }) => (
     <View style={styles.orderItem}>
-      <Image source={item.image} style={styles.image} />
+      <Image source={{ uri: item.image }} style={styles.image} />
       <View style={styles.details}>
         <Text style={styles.title}>{item.title}</Text>
         <Text style={styles.category}>{item.category}</Text>
@@ -24,11 +41,14 @@ const OrdersScreen: React.FC = () => {
     </View>
   );
 
+  if (loading) return <Text>Loading...</Text>;
+  if (error) return <Text>{error}</Text>;
+
   return (
     <FlatList
       data={orders}
       renderItem={renderOrder}
-      keyExtractor={(item, index) => index.toString()}
+      keyExtractor={(item) => item.id.toString()}
       contentContainerStyle={styles.container}
     />
   );

@@ -1,8 +1,8 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useOrders } from './Context/OrdersContext';
-import { RootStackParamList } from './Navigation/navigationTypes';
+import { useOrders } from '../Context/OrdersContext';
+import { RootStackParamList } from '../Navigation/navigationTypes';
 
 type EquipmentDetailScreenRouteProp = RouteProp<RootStackParamList, 'EquipmentDetail'>;
 

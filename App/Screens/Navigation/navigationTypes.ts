@@ -12,7 +12,7 @@ export type RootStackParamList = {
   OrdersContext:undefined;
   RentEquipmentScreen: undefined;
   CategoryEquipment: { category: string };
-  Payment:undefined;
+
   EquipmentDetail: {
       title: string;
       image: any;
@@ -20,7 +20,14 @@ export type RootStackParamList = {
       cost: string;
       hirerInfo: string;
       contact: string;
-      Orders?: string;
+      Orders: string;
+      location: string;
+      availability: string;
+      toolInfo: string;
+      terms: string;
+      startDate:string;
+      endDate: string;
+      totalCost: string;
     };
     RentEquipment:{
       startDate: string;
@@ -33,4 +40,11 @@ export type RootStackParamList = {
       endDate: Date | null;
       cost: number;
     };
+    DateSelectionTimeScreen: {
+      startDate: Date | null;
+      endDate: Date | null;
+      cost: number
+    };
+   DateSelectionTime: undefined;
+
   };

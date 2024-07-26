@@ -1,6 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
-import { FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Alert, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useOrders } from '../Context/OrdersContext';
 import { RootStackParamList } from '../Navigation/navigationTypes';
 
@@ -14,7 +14,7 @@ interface EquipmentOption {
 const EquipmentDetailScreen: React.FC = () => {
   const route = useRoute<EquipmentDetailScreenRouteProp>();
   const navigation = useNavigation();
-  const { title, image, category, cost, hirerInfo, contact } = route.params;
+  const { title, image, category, cost, hirerInfo, contact, startDate, endDate, totalCost } = route.params;
   const { addOrder } = useOrders();
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentOption | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
@@ -31,7 +31,7 @@ const EquipmentDetailScreen: React.FC = () => {
     { label: 'Baler', value: 'Baler' },
     { label: 'Plow', value: 'Plow' },
     { label: 'Sprayer', value: 'Sprayer' },
-    { label: 'Culvitator', value: 'Cultivator' },
+    { label: 'Cultivator', value: 'Cultivator' },
   ];
 
   const equipmentTypes: { [key: string]: string[] } = {
@@ -45,25 +45,9 @@ const EquipmentDetailScreen: React.FC = () => {
 
   const handleHireNow = () => {
     if (selectedEquipment && selectedType) {
-      const newOrder = {
-        title,
-        image,
-        category,
-        cost,
-        hirerInfo,
-        contact,
-        location,
-        availability,
-        toolInfo,
-        terms,
-        equipment: selectedEquipment.label,
-        type: selectedType,
-      };
-      addOrder(newOrder);
-      alert(`Renting ${selectedEquipment.label} - ${selectedType}`);
-      navigation.navigate('Orders');
+      navigation.navigate('DateSelectionTimeScreen');
     } else {
-      alert('Please select equipment and type before Renting');
+      Alert.alert('Error', 'Please select equipment and type before proceeding');
     }
   };
 
@@ -128,7 +112,7 @@ const EquipmentDetailScreen: React.FC = () => {
             <View style={styles.modalContent}>
               <FlatList
                 data={equipmentOptions}
-                renderItem={({ item }) => renderOption({ item })}
+                renderItem={renderOption}
                 keyExtractor={(item) => item.value}
                 style={{ flexGrow: 1, width: '100%' }}
               />
@@ -148,6 +132,14 @@ const EquipmentDetailScreen: React.FC = () => {
           </View>
         )}
 
+        {startDate && endDate && (
+          <>
+            <Text style={styles.pickerLabel}>Selected Start Date: {startDate}</Text>
+            <Text style={styles.pickerLabel}>Selected End Date: {endDate}</Text>
+            <Text style={styles.pickerLabel}>Total Cost: {totalCost}</Text>
+          </>
+        )}
+
         <TouchableOpacity
           style={[styles.button, (!selectedEquipment || !selectedType) && styles.disabledButton]}
           onPress={handleHireNow}
@@ -159,6 +151,7 @@ const EquipmentDetailScreen: React.FC = () => {
     </ScrollView>
   );
 };
+
 
 const styles = StyleSheet.create({
   screen: {
@@ -276,26 +269,26 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderWidth: 1,
-    borderColor: '#888',
-    marginRight: 10,
+    borderColor: '#DDD',
     justifyContent: 'center',
     alignItems: 'center',
+    marginRight: 10,
   },
   checkedCircle: {
-    width: 14,
-    height: 14,
-    borderRadius: 7,
-    backgroundColor: '#888',
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#5AE4A8',
   },
   button: {
-    backgroundColor: '#28a745',
+    backgroundColor: '#5AE4A8',
     padding: 15,
     borderRadius: 5,
     alignItems: 'center',
     marginTop: 20,
   },
   disabledButton: {
-    backgroundColor: '#CCC',
+    backgroundColor: '#AAA',
   },
   buttonText: {
     color: 'white',

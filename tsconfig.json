@@ -10,7 +10,7 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
-    "isolatedModules":
+    "isolatedModules": true,
   },
   "include": [
     "src/**/*.ts",

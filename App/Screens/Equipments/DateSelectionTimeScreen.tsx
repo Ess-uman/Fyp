@@ -1,77 +1,61 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { Ionicons } from '@expo/vector-icons';
+import { useNavigation } from '@react-navigation/native';
+import { StackNavigationProp } from '@react-navigation/stack';
 import React, { useState } from 'react';
-import { Alert, Button, StyleSheet, Switch, Text, View } from 'react-native';
+import { Alert, StyleSheet, Switch, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar, DateObject } from 'react-native-calendars';
-import { db } from '../../Firebase/FirebaseConfig';
+import { RootStackParamList } from '../Navigation/navigationTypes';
 
-const DateTimeSelectionScreen = ({ navigation }) => {
+type DateTimeSelectionScreenNavigationProp = StackNavigationProp<RootStackParamList, 'DateTimeSelection'>;
+
+const DateTimeSelectionScreen = () => {
   const [bookDelivery, setBookDelivery] = useState(false);
-  const [pickUpTime, setPickUpTime] = useState(new Date());
-  const [returnTime, setReturnTime] = useState(new Date());
-  const [selectedDates, setSelectedDates] = useState({});
-  const maxDays = 365; // Maximum length of one year
-  const pricePerDay = 50; // Example price per day
-
-  const onPickUpTimeChange = (event, selectedDate) => {
-    setPickUpTime(selectedDate || pickUpTime);
-  };
-
-  const onReturnTimeChange = (event, selectedDate) => {
-    setReturnTime(selectedDate || returnTime);
-  };
-
-  const handleBooking = async () => {
-    const dates = Object.keys(selectedDates);
-    if (dates.length > 0) {
-      const price = dates.length * pricePerDay;
-      try {
-        await addDoc(collection(db, 'bookings'), {
-          bookDelivery,
-          pickUpTime: pickUpTime.toISOString(),
-          returnTime: returnTime.toISOString(),
-          selectedDates: dates,
-          totalPrice: price,
-          createdAt: serverTimestamp()
-        });
-        Alert.alert("Booking Successful", `You have selected ${dates.length} days. The total price is $${price}.`);
-      } catch (error) {
-        Alert.alert("Booking Error", "An error occurred while processing your booking. Please try again.");
-      }
-    } else {
-      Alert.alert("Booking", "Please select at least one day.");
-    }
-  };
+  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedPickUpDate, setSelectedPickUpDate] = useState('');
+  const [selectedReturnDate, setSelectedReturnDate] = useState('');
+  const navigation = useNavigation<DateTimeSelectionScreenNavigationProp>();
+  const pricePerDay = 50;
 
   const onDayPress = (day: DateObject) => {
-    let newSelectedDates = { ...selectedDates };
-
-    if (newSelectedDates[day.dateString]) {
-      delete newSelectedDates[day.dateString];
-    } else {
-      if (Object.keys(newSelectedDates).length < maxDays) {
-        newSelectedDates[day.dateString] = { selected: true, marked: true };
+    if (!selectedPickUpDate) {
+      setSelectedPickUpDate(day.dateString);
+    } else if (!selectedReturnDate) {
+      if (day.dateString < selectedPickUpDate) {
+        Alert.alert("Invalid Date", "Return date cannot be before pick-up date.");
       } else {
-        Alert.alert("Selection Limit", `You can select a maximum of ${maxDays} days.`);
+        setSelectedReturnDate(day.dateString);
       }
+    } else if (day.dateString === selectedPickUpDate) {
+      setSelectedPickUpDate('');
+    } else if (day.dateString === selectedReturnDate) {
+      setSelectedReturnDate('');
+    } else {
+      Alert.alert("Selection Limit", "You can only select two dates: pick-up and return.");
     }
+  };
 
-    setSelectedDates(newSelectedDates);
+  const handleBooking = () => {
+    if (selectedPickUpDate && selectedReturnDate && selectedOption) {
+      navigation.navigate('Payment', {
+        selectedOption,
+        selectedPickUpDate,
+        selectedReturnDate,
+        bookDelivery,
+        price: pricePerDay,
+      });
+    } else {
+      Alert.alert("Booking", "Please select both pick-up and return dates, and choose either pick-up or delivery.");
+    }
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Date & Time</Text>
-      <View style={styles.switchContainer}>
-        <Text style={styles.switchLabel}>Book Delivery</Text>
-        <Switch
-          value={bookDelivery}
-          onValueChange={setBookDelivery}
-        />
-      </View>
       <Calendar
         onDayPress={onDayPress}
-        markedDates={selectedDates}
+        markedDates={{
+          [selectedPickUpDate]: { selected: true, selectedColor: 'blue' },
+          [selectedReturnDate]: { selected: true, selectedColor: 'green' }
+        }}
         style={styles.calendar}
         theme={{
           todayTextColor: '#00adf5',
@@ -80,23 +64,35 @@ const DateTimeSelectionScreen = ({ navigation }) => {
           selectedDayTextColor: '#ffffff',
         }}
       />
-      <View style={styles.timePickerContainer}>
-        <Text style={styles.timePickerLabel}>Pick-up Time</Text>
-        <DateTimePicker
-          value={pickUpTime}
-          mode="time"
-          display="default"
-          onChange={onPickUpTimeChange}
-        />
-        <Text style={styles.timePickerLabel}>Return Time</Text>
-        <DateTimePicker
-          value={returnTime}
-          mode="time"
-          display="default"
-          onChange={onReturnTimeChange}
-        />
+      <View style={styles.optionsContainer}>
+        <Text style={styles.header}>Select Service</Text>
+        <View style={styles.optionButtons}>
+          <TouchableOpacity
+            style={[styles.optionButton, selectedOption === 'Pick-Up' && styles.selectedOption]}
+            onPress={() => setSelectedOption('Pick-Up')}
+          >
+            <Ionicons name="car" size={24} color={selectedOption === 'Pick-Up' ? '#ffffff' : '#000000'} />
+            <Text style={selectedOption === 'Pick-Up' ? styles.selectedOptionText : styles.optionText}>Pick-Up</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.optionButton, selectedOption === 'Delivery' && styles.selectedOption]}
+            onPress={() => setSelectedOption('Delivery')}
+          >
+            <Ionicons name="bicycle" size={24} color={selectedOption === 'Delivery' ? '#ffffff' : '#000000'} />
+            <Text style={selectedOption === 'Delivery' ? styles.selectedOptionText : styles.optionText}>Delivery</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.switchContainer}>
+          <Text style={styles.switchLabel}>Include Delivery</Text>
+          <Switch
+            value={bookDelivery}
+            onValueChange={setBookDelivery}
+          />
+        </View>
+        <TouchableOpacity style={styles.bookButton} onPress={handleBooking}>
+          <Text style={styles.bookButtonText}>Book Now</Text>
+        </TouchableOpacity>
       </View>
-      <Button title="Book Now" onPress={handleBooking} />
     </View>
   );
 };
@@ -105,33 +101,65 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#E0F0F0',
+    backgroundColor: '#ffffff',
+  },
+  calendar: {
+    borderRadius: 10,
+    marginBottom: 20,
+    marginTop: 80,
+  },
+  optionsContainer: {
+    marginTop: 20,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    textAlign: 'center',
+  },
+  optionButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    marginBottom: 20,
+  },
+  optionButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    borderRadius: 10,
+    backgroundColor: '#ccc',
+  },
+  selectedOption: {
+    backgroundColor: '#5AE4A8',
+  },
+  optionText: {
+    marginLeft: 10,
+    fontSize: 16,
+  },
+  selectedOptionText: {
+    marginLeft: 10,
+    fontSize: 16,
+    color: '#ffffff',
   },
   switchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     marginBottom: 20,
-    borderRadius: 10,
   },
   switchLabel: {
     fontSize: 18,
   },
-  calendar: {
-    borderRadius: 20,
-    marginBottom: 20,
+  bookButton: {
+    backgroundColor: '#5AE4A8',
+    padding: 15,
+    borderRadius: 10,
+    alignItems: 'center',
   },
-  timePickerContainer: {
-    marginTop: 16,
-  },
-  timePickerLabel: {
+  bookButtonText: {
+    color: '#ffffff',
     fontSize: 18,
-    marginBottom: 8,
+    fontWeight: 'bold',
   },
 });
 

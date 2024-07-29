@@ -35,16 +35,13 @@ export type RootStackParamList = {
       cost: string;
       Screen: string;
     }
-    PaymentScreen: {
-      startDate: Date | null;
-      endDate: Date | null;
+    Payment: {
+      selectedOption: string;
+      selectedPickUpDate: string;
+      selectedReturnDate: string;
+      bookDelivery: boolean;
+      price: number;
+    };
+    DateTimeSelectionScreen: undefined;
       cost: number;
     };
-    DateSelectionTimeScreen: {
-      startDate: Date | null;
-      endDate: Date | null;
-      cost: number
-    };
-   DateSelectionTime: undefined;
-
-  };

@@ -7,6 +7,7 @@ import EquipmentDetailScreen from '../Equipments/EquipmentDetails';
 import HomeScreen from '../Home';
 import OrdersScreen from '../NavBar/OrdersScreen';
 import SettingsScreen from '../NavBar/SettingsScreen';
+import Payment from '../Payment';
 
 
 
@@ -36,6 +37,7 @@ const AppNavigator = () => {
       <Stack.Screen name="EquipmentDetail" component={EquipmentDetailScreen} />
       <Stack.Screen name="Category" component={CategoryScreen} options={{ headerShown: false }} />
       <Stack.Screen name="DateSelectionTimeScreen" component={DateSelectionTimeScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Payment" component={Payment} options={{ headerShown: false }} />
 
 
 

@@ -31,7 +31,7 @@ const CategoryEquipmentScreen: React.FC = () => {
           <TouchableOpacity
             key={item.id}
             style={styles.equipmentItem}
-            onPress={() => navigation.navigate('EquipmentDetail', {
+            onPress={() => navigation.navigate('EquipmentDetails', {
               title: item.title,
               image: item.image,
               category: item.category,
@@ -64,10 +64,10 @@ const styles = StyleSheet.create({
     fontSize: 26,
     fontWeight: 'bold',
     textAlign: 'center',
-    marginBottom: 30,
+    marginBottom: 70,
   },
   equipmentList: {
-    paddingBottom: 20,
+    paddingBottom: 30,
   },
   equipmentItem: {
     backgroundColor: '#FFF',
@@ -85,6 +85,8 @@ const styles = StyleSheet.create({
   equipmentTitle: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom:5,
+
   },
   equipmentCategory: {
     fontSize: 14,

@@ -15,7 +15,7 @@ const equipmentItems = [
   { id: '6', title: '328 Small Square Baler', category: 'Balers', image: require('../assets/328 Small Square Baler.png'), cost: 'GHS 180/day', hirerInfo: 'Alex', contact: '024 300 0000' },
 ];
 
-const CategoryEquipmentScreen: React.FC = () => {
+const CategoryEquipment: React.FC = () => {
   const route = useRoute<CategoryEquipmentScreenRouteProp>();
   const navigation = useNavigation<CategoryEquipmentScreenNavigationProp>();
   const { category } = route.params;
@@ -94,4 +94,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CategoryEquipmentScreen;
+export default CategoryEquipment;

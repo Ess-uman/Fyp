@@ -1,7 +1,6 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Alert, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useOrders } from '../Context/OrdersContext';
 import { RootStackParamList } from '../Navigation/navigationTypes';
 
 type EquipmentDetailScreenRouteProp = RouteProp<RootStackParamList, 'EquipmentDetail'>;
@@ -14,8 +13,7 @@ interface EquipmentOption {
 const EquipmentDetailScreen: React.FC = () => {
   const route = useRoute<EquipmentDetailScreenRouteProp>();
   const navigation = useNavigation();
-  const { title, image, category, cost, hirerInfo, contact, startDate, endDate, totalCost } = route.params;
-  const { addOrder } = useOrders();
+  const { title, image, category, cost, hirerInfo, contact } = route.params;
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentOption | null>(null);
   const [selectedType, setSelectedType] = useState<string | null>(null);
   const [modalVisible, setModalVisible] = useState(false);
@@ -45,7 +43,17 @@ const EquipmentDetailScreen: React.FC = () => {
 
   const handleHireNow = () => {
     if (selectedEquipment && selectedType) {
-      navigation.navigate('DateSelectionTimeScreen');
+      navigation.navigate('Payment', {
+        title,
+        image,
+        category,
+        cost,
+        hirerInfo,
+        contact,
+        selectedEquipment,
+        selectedType,
+        // Include additional params if needed
+      });
     } else {
       Alert.alert('Error', 'Please select equipment and type before proceeding');
     }
@@ -132,14 +140,6 @@ const EquipmentDetailScreen: React.FC = () => {
           </View>
         )}
 
-        {startDate && endDate && (
-          <>
-            <Text style={styles.pickerLabel}>Selected Start Date: {startDate}</Text>
-            <Text style={styles.pickerLabel}>Selected End Date: {endDate}</Text>
-            <Text style={styles.pickerLabel}>Total Cost: {totalCost}</Text>
-          </>
-        )}
-
         <TouchableOpacity
           style={[styles.button, (!selectedEquipment || !selectedType) && styles.disabledButton]}
           onPress={handleHireNow}
@@ -151,7 +151,6 @@ const EquipmentDetailScreen: React.FC = () => {
     </ScrollView>
   );
 };
-
 
 const styles = StyleSheet.create({
   screen: {
@@ -270,6 +269,7 @@ const styles = StyleSheet.create({
     height: 20,
     borderWidth: 1,
     borderColor: '#DDD',
+    borderRadius: 10,
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,

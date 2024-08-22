@@ -1,119 +1,183 @@
 import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
-import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
 import React, { useState } from 'react';
-import { ActivityIndicator, Alert, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { db } from '../Firebase/FirebaseConfig';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Calendar } from 'react-native-calendars';
+import { RootStackParamList } from '../Navigation/navigationTypes';
 
-type PaymentRouteProp = RouteProp<{
-  params: {
-    selectedOption: string;
-    selectedPickUpDate: string;
-    selectedReturnDate: string;
-    bookDelivery: boolean;
-    price: number;
-  };
-}, 'params'>;
+type PaymentScreenRouteProp = RouteProp<RootStackParamList, 'Payment'>;
 
-const Payment = () => {
+const PaymentScreen: React.FC = () => {
+  const route = useRoute<PaymentScreenRouteProp>();
   const navigation = useNavigation();
-  const route = useRoute<PaymentRouteProp>();
-  const { selectedOption, selectedPickUpDate, selectedReturnDate, bookDelivery, price } = route.params;
+  const { title, image, category, cost, hirerInfo, contact, selectedEquipment, selectedType } = route.params;
 
-  const [loading, setLoading] = useState(false);
+  const [startDate, setStartDate] = useState<string | undefined>();
+  const [endDate, setEndDate] = useState<string | undefined>();
+  const [isDelivery, setIsDelivery] = useState<boolean>(false);
 
-  const handlePayment = async () => {
-    setLoading(true);
-    try {
-      // Simulate payment processing
-      setTimeout(async () => {
-        try {
-          await addDoc(collection(db, 'orders'), {
-            option: selectedOption,
-            pickUpDate: selectedPickUpDate,
-            returnDate: selectedReturnDate,
-            bookDelivery,
-            totalPrice: price,
-            createdAt: serverTimestamp()
-          });
-          Alert.alert("Payment Successful", "Your booking has been completed.");
-          navigation.navigate('OrdersScreen'); // Navigate to the Orders screen
-        } catch (error) {
-          Alert.alert("Payment Error", "An error occurred while processing your payment. Please try again.");
-        }
-        setLoading(false);
-      }, 2000); // Simulate a delay for payment processing
-    } catch (error) {
-      Alert.alert("Payment Error", "An error occurred while processing your payment. Please try again.");
-      setLoading(false);
-    }
+  const handlePayment = () => {
+    // Implement payment processing here
+    navigation.navigate('Orders'); // Navigate to the Orders screen after payment
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Payment Summary</Text>
-      <View style={styles.infoContainer}>
-        <Text style={styles.info}>Selected Option: <Text style={styles.infoValue}>{selectedOption}</Text></Text>
-        <Text style={styles.info}>Pick-Up Date: <Text style={styles.infoValue}>{selectedPickUpDate}</Text></Text>
-        <Text style={styles.info}>Return Date: <Text style={styles.infoValue}>{selectedReturnDate}</Text></Text>
-        <Text style={styles.info}>Include Delivery: <Text style={styles.infoValue}>{bookDelivery ? 'Yes' : 'No'}</Text></Text>
-        <Text style={styles.info}>Total Price: <Text style={styles.infoValue}>GHS {price}</Text></Text>
+    <ScrollView contentContainerStyle={styles.screen}>
+      <View style={styles.detailsBox}>
+        <View style={styles.imageContainer}>
+          <Image source={image} style={styles.image} />
+        </View>
+        <View style={styles.infoContainer}>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.category}>{category}</Text>
+          <Text style={styles.cost}>Cost: {cost}</Text>
+          <Text style={styles.detail}>Equipment: {selectedEquipment?.label || 'Not selected'}</Text>
+          <Text style={styles.detail}>Type: {selectedType || 'Not selected'}</Text>
+        </View>
       </View>
-      {loading ? (
-        <ActivityIndicator size="large" color="#00adf5" style={styles.loader} />
-      ) : (
-        <TouchableOpacity style={styles.payButton} onPress={handlePayment}>
-          <Text style={styles.payButtonText}>Pay Now</Text>
+
+      <View style={styles.calendarContainer}>
+        <Text style={styles.sectionTitle}>Select Dates</Text>
+        <Calendar
+          markedDates={{
+            [startDate || '']: { startingDay: true, color: '#5AE4A8', textColor: '#fff' },
+            [endDate || '']: { endingDay: true, color: '#5AE4A8', textColor: '#fff' },
+          }}
+          onDayPress={(day) => {
+            if (!startDate) {
+              setStartDate(day.dateString);
+            } else if (!endDate) {
+              setEndDate(day.dateString);
+            } else {
+              setStartDate(day.dateString);
+              setEndDate(undefined);
+            }
+          }}
+        />
+      </View>
+
+      <View style={styles.deliveryContainer}>
+        <Text style={styles.sectionTitle}>Delivery Option</Text>
+        <TouchableOpacity
+          style={[styles.optionButton, isDelivery && styles.selectedOption]}
+          onPress={() => setIsDelivery(true)}
+        >
+          <Text style={styles.optionText}>Delivery</Text>
         </TouchableOpacity>
-      )}
-    </View>
+        <TouchableOpacity
+          style={[styles.optionButton, !isDelivery && styles.selectedOption]}
+          onPress={() => setIsDelivery(false)}
+        >
+          <Text style={styles.optionText}>Pickup</Text>
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity
+        style={styles.button}
+        onPress={handlePayment}
+      >
+        <Text style={styles.buttonText}>Proceed to Payment</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  screen: {
+    flexGrow: 1,
     padding: 20,
-    justifyContent: 'center',
-    backgroundColor: '#E0F0F0',
+    backgroundColor: '#FFF',
   },
-  header: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-  },
-  infoContainer: {
-    marginBottom: 30,
-    padding: 20,
-    backgroundColor: '#ffffff',
+  detailsBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#DDD',
     borderRadius: 10,
-    shadowColor: '#000000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-  },
-  info: {
-    fontSize: 18,
-    marginBottom: 10,
-  },
-  infoValue: {
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  loader: {
-    marginTop: 20,
-  },
-  payButton: {
-    backgroundColor: '#5AE4A8',
     padding: 15,
+    backgroundColor: '#F9F9F9',
+    marginBottom: 20,
+  },
+  imageContainer: {
+    width: 120,
+    height: 120,
     borderRadius: 10,
+    overflow: 'hidden',
+    borderWidth: 1,
+    borderColor: '#DDD',
+    marginRight: 15,
+    justifyContent: 'center',
     alignItems: 'center',
   },
-  payButtonText: {
-    color: '#ffffff',
+  image: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  infoContainer: {
+    flex: 1,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  category: {
+    fontSize: 18,
+    color: '#888',
+    marginBottom: 5,
+  },
+  cost: {
     fontSize: 18,
     fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  detail: {
+    fontSize: 16,
+    marginBottom: 5,
+  },
+  calendarContainer: {
+    marginTop: 20,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 10,
+    padding: 15,
+    backgroundColor: '#F9F9F9',
+  },
+  deliveryContainer: {
+    marginTop: 20,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  optionButton: {
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#DDD',
+    borderRadius: 5,
+    marginBottom: 10,
+    alignItems: 'center',
+    backgroundColor: '#F9F9F9',
+  },
+  selectedOption: {
+    backgroundColor: '#5AE4A8',
+  },
+  optionText: {
+    fontSize: 16,
+    color: '#000',
+  },
+  button: {
+    backgroundColor: '#5AE4A8',
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 30,
+  },
+  buttonText: {
+    color: 'white',
+    fontSize: 18,
   },
 });
 
-export default Payment;
+export default PaymentScreen;

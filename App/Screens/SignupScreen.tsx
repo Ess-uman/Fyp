@@ -38,7 +38,7 @@ const SignupScreen: React.FC = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#e8ecf4' }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: '#ffff' }}>
       <View style={styles.container}>
         <KeyboardAwareScrollView>
           <View style={styles.header}>
@@ -61,7 +61,7 @@ const SignupScreen: React.FC = () => {
               <TextInput
                 clearButtonMode="while-editing"
                 onChangeText={name => setForm({ ...form, name })}
-                placeholder="John Doe"
+                placeholder="Cassie Jones"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
                 value={form.name}
@@ -75,7 +75,7 @@ const SignupScreen: React.FC = () => {
                 clearButtonMode="while-editing"
                 keyboardType="email-address"
                 onChangeText={email => setForm({ ...form, email })}
-                placeholder="john@example.com"
+                placeholder="email@example.com"
                 placeholderTextColor="#6b7280"
                 style={styles.inputControl}
                 value={form.email}
@@ -178,6 +178,7 @@ const styles = StyleSheet.create({
     color: '#222',
     textAlign: 'center',
     letterSpacing: 0.15,
+    marginBottom: 180,
   },
   input: {
     marginBottom: 16,
@@ -190,21 +191,21 @@ const styles = StyleSheet.create({
   },
   inputControl: {
     height: 50,
-    backgroundColor: '#fff',
+    backgroundColor: '#F1F4F9',
     paddingHorizontal: 16,
     borderRadius: 12,
     fontSize: 15,
     fontWeight: '500',
     color: '#222',
-    borderWidth: 1,
-    borderColor: '#C9D3DB',
+    borderWidth: 0,
+    borderColor: '#ffffff',
     borderStyle: 'solid',
   },
   btn: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    borderRadius: 30,
+    borderRadius: 15,
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderWidth: 1,

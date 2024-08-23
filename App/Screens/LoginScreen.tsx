@@ -28,7 +28,6 @@ const LoginScreen: React.FC = () => {
         const user = userCredential.user;
       })
       .then(() => {
-        alert('Login successful! 🎉');
         navigation.navigate('AppNavigator');
       })
       .catch((err: any) => {
@@ -57,7 +56,7 @@ const LoginScreen: React.FC = () => {
               clearButtonMode="while-editing"
               keyboardType="email-address"
               onChangeText={email => setForm({ ...form, email })}
-              placeholder="akua@example.com"
+              placeholder="123@example.com"
               placeholderTextColor="#6b7280"
               style={styles.inputControl}
               value={form.email}

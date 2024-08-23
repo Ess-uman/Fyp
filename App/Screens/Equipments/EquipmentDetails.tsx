@@ -33,12 +33,12 @@ const EquipmentDetailScreen: React.FC = () => {
   ];
 
   const equipmentTypes: { [key: string]: string[] } = {
-    Tractor: ['Type A', 'Type B', 'Type C'],
-    Harvester: ['Type X', 'Type Y', 'Type Z'],
-    Baler: ['Type M', 'Type N', 'Type O'],
-    Plow: ['Type P', 'Type Q', 'Type R'],
-    Sprayer: ['Type H', 'Type I', 'Type J'],
-    Cultivator: ['Type W1', 'Type W2', 'Type W3'],
+    Tractor: ['Utility Tractor ', 'Raw Crop Tractor', 'compact tractor'],
+    Harvester: ['Combine Harvester', 'Forage Harvester'],
+    Baler: ['Round Baler', 'Square Baler', 'Silage Baler'],
+    Plow: ['MoldBoard Plow', 'Disc Plow', 'Chisel Plow'],
+    Sprayer: ['Boom Sprayer', 'Mist Sprayer ', 'Air Blast Sprayer'],
+    Cultivator: ['Field Cultivator', 'Row Crop Cultivator', 'Rotary Cultivator'],
   };
 
   const handleHireNow = () => {
@@ -52,7 +52,6 @@ const EquipmentDetailScreen: React.FC = () => {
         contact,
         selectedEquipment,
         selectedType,
-        // Include additional params if needed
       });
     } else {
       Alert.alert('Error', 'Please select equipment and type before proceeding');
@@ -160,7 +159,7 @@ const styles = StyleSheet.create({
   },
   box: {
     width: '100%',
-    borderWidth: 1,
+    borderWidth: 0.2,
     borderColor: '#DDD',
     borderRadius: 10,
     padding: 15,

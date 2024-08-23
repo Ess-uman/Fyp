@@ -13,22 +13,20 @@ export type RootStackParamList = {
   RentEquipmentScreen: undefined;
   CategoryEquipment: { category: string };
 
-  EquipmentDetail: {
+    EquipmentDetail: {
       title: string;
-      image: any;
+      image: any; // You can replace 'any' with a more specific type if needed
       category: string;
       cost: string;
       hirerInfo: string;
       contact: string;
-      Orders: string;
-      location: string;
-      availability: string;
-      toolInfo: string;
-      terms: string;
-      startDate:string;
-      endDate: string;
-      totalCost: string;
+      selectedEquipment?: {
+        label: string;
+        value: string;
+      };
+      selectedType?: string;
     };
+
     RentEquipment:{
       startDate: string;
       endDate: string;
@@ -36,11 +34,17 @@ export type RootStackParamList = {
       Screen: string;
     }
     Payment: {
-      selectedOption: string;
-      selectedPickUpDate: string;
-      selectedReturnDate: string;
-      bookDelivery: boolean;
-      price: number;
+        title: string;
+        image: any;
+        category: string;
+        cost: string;
+        hirerInfo: string;
+        contact: string;
+        selectedEquipment: {
+          label: string;
+          value: string;
+        } | null;
+        selectedType: string | null;
     };
     DateTimeSelectionScreen: undefined;
       cost: number;

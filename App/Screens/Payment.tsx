@@ -2,7 +2,7 @@ import { RouteProp, useNavigation, useRoute } from '@react-navigation/native';
 import React, { useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
-import { RootStackParamList } from '../Navigation/navigationTypes';
+import { RootStackParamList } from './Navigation/navigationTypes';
 
 type PaymentScreenRouteProp = RouteProp<RootStackParamList, 'Payment'>;
 
@@ -95,7 +95,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     backgroundColor: '#F9F9F9',
-    marginBottom: 20,
+    marginBottom: 15,
   },
   imageContainer: {
     width: 120,

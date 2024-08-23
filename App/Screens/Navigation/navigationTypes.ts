@@ -15,7 +15,7 @@ export type RootStackParamList = {
 
     EquipmentDetail: {
       title: string;
-      image: any; // You can replace 'any' with a more specific type if needed
+      image: any;
       category: string;
       cost: string;
       hirerInfo: string;
@@ -40,6 +40,7 @@ export type RootStackParamList = {
         cost: string;
         hirerInfo: string;
         contact: string;
+        SelectedType: string,
         selectedEquipment: {
           label: string;
           value: string;

@@ -24,6 +24,21 @@ const Payment = () => {
     }
   }, [startDate, endDate]);
 
+  const handleDayPress = (day: { dateString: string }) => {
+    if (day.dateString === startDate || day.dateString === endDate) {
+      // Deselect if the date is already selected
+      setStartDate(undefined);
+      setEndDate(undefined);
+    } else if (!startDate || (startDate && endDate)) {
+      // If no start date or both dates are selected, reset and set the start date
+      setStartDate(day.dateString);
+      setEndDate(undefined);
+    } else if (!endDate) {
+      // Set the end date if it's not yet selected
+      setEndDate(day.dateString);
+    }
+  };
+
   return (
     <ScrollView contentContainerStyle={styles.screen}>
       <View style={styles.detailsBox}>
@@ -59,19 +74,7 @@ const Payment = () => {
             [startDate || '']: { selected: true, startingDay: true, color: '#5AE4A8', textColor: '#fff' },
             [endDate || '']: { selected: true, endingDay: true, color: '#5AE4A8', textColor: '#fff' },
           }}
-          onDayPress={(day) => {
-            if (!startDate || (startDate && endDate)) {
-              setStartDate(day.dateString);
-              setEndDate(undefined);
-            } else if (!endDate) {
-              if (day.dateString === startDate) {
-                setStartDate(undefined);
-                setEndDate(undefined);
-              } else {
-                setEndDate(day.dateString);
-              }
-            }
-          }}
+          onDayPress={handleDayPress}
           style={styles.calendar}
         />
       </View>
@@ -104,7 +107,6 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-
   detailsBox: {
     flexDirection: 'row',
     alignItems: 'center',

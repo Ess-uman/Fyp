@@ -3,15 +3,15 @@ import React, { useState } from 'react';
 import { Alert, FlatList, Image, Modal, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RootStackParamList } from '../Navigation/navigationTypes';
 
-type EquipmentDetailScreenRouteProp = RouteProp<RootStackParamList, 'EquipmentDetail'>;
+type EquipmentDetailsScreenRouteProp = RouteProp<RootStackParamList, 'EquipmentDetailsScreen'>;
 
 interface EquipmentOption {
   label: string;
   value: string;
 }
 
-const EquipmentDetailScreen: React.FC = () => {
-  const route = useRoute<EquipmentDetailScreenRouteProp>();
+const EquipmentDetailsScreen: React.FC = () => {
+  const route = useRoute<EquipmentDetailsScreenRouteProp>();
   const navigation = useNavigation();
   const { title, image, category, cost, hirerInfo, contact } = route.params;
   const [selectedEquipment, setSelectedEquipment] = useState<EquipmentOption | null>(null);
@@ -295,4 +295,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default EquipmentDetailScreen;
+export default EquipmentDetailsScreen;

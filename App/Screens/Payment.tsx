@@ -1,15 +1,28 @@
 import { useRoute } from '@react-navigation/native';
-import React, { useState } from 'react';
+import moment from 'moment';
+import React, { useEffect, useState } from 'react';
 import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Calendar } from 'react-native-calendars';
 
-const PaymentScreen = () => {
+const Payment = () => {
   const route = useRoute();
   const { selectedEquipment, selectedType, cost, image, category } = route.params;
 
   const [startDate, setStartDate] = useState<string | undefined>(undefined);
   const [endDate, setEndDate] = useState<string | undefined>(undefined);
-  const [isDelivery, setIsDelivery] = useState<boolean | undefined>(undefined);
+  const [totalCost, setTotalCost] = useState<number>(0);
+  const [isDelivery, setIsDelivery] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    if (startDate && endDate) {
+      const start = moment(startDate);
+      const end = moment(endDate);
+      const days = end.diff(start, 'days') + 1;
+      setTotalCost(days * cost);
+    } else {
+      setTotalCost(0);
+    }
+  }, [startDate, endDate]);
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>
@@ -21,24 +34,23 @@ const PaymentScreen = () => {
         <View style={styles.infoContainer}>
           <Text style={styles.title}>{selectedEquipment?.label || 'Not selected'}</Text>
           <Text style={styles.category}>{category}</Text>
-          <Text style={styles.cost}>Cost: {cost}</Text>
+          <Text style={styles.cost}>Cost per day: {cost} GHS</Text>
           <Text style={styles.detail}>Type: {selectedType || 'Not selected'}</Text>
         </View>
       </View>
 
       <View style={styles.optionsContainer}>
         <TouchableOpacity
-          style={[styles.option, !isDelivery && styles.selectedOption]}
+          style={[styles.option, isDelivery === false && styles.selectedOption]}
           onPress={() => setIsDelivery(false)}
         >
-          <Text style={[styles.optionText, !isDelivery && styles.selectedOptionText]}>Pickup</Text>
+          <Text style={[styles.optionText, isDelivery === false && styles.selectedOptionText]}>Pickup</Text>
         </TouchableOpacity>
-
         <TouchableOpacity
-          style={[styles.option, isDelivery && styles.selectedOption]}
+          style={[styles.option, isDelivery === true && styles.selectedOption]}
           onPress={() => setIsDelivery(true)}
         >
-          <Text style={[styles.optionText, isDelivery && styles.selectedOptionText]}>Delivery</Text>
+          <Text style={[styles.optionText, isDelivery === true && styles.selectedOptionText]}>Delivery</Text>
         </TouchableOpacity>
       </View>
 
@@ -65,7 +77,23 @@ const PaymentScreen = () => {
         />
       </View>
 
-      <TouchableOpacity style={styles.proceedButton} onPress={() => {/* Handle proceed to checkout */}}>
+      <View style={styles.summaryContainer}>
+        <Text style={styles.summaryTitle}>Booking Summary</Text>
+        <View style={styles.summaryDetail}>
+          <Text style={styles.summaryLabel}>Start Date:</Text>
+          <Text style={styles.summaryValue}>{startDate || 'Not selected'}</Text>
+        </View>
+        <View style={styles.summaryDetail}>
+          <Text style={styles.summaryLabel}>End Date:</Text>
+          <Text style={styles.summaryValue}>{endDate || 'Not selected'}</Text>
+        </View>
+        <View style={styles.summaryDetail}>
+          <Text style={styles.summaryLabel}>Total Cost:</Text>
+          <Text style={styles.summaryValue}>{totalCost} GHS</Text>
+        </View>
+      </View>
+
+      <TouchableOpacity style={styles.proceedButton}>
         <Text style={styles.proceedButtonText}>Proceed to Checkout</Text>
       </TouchableOpacity>
     </ScrollView>
@@ -75,6 +103,7 @@ const PaymentScreen = () => {
 const styles = StyleSheet.create({
   screen: {
     padding: 20,
+    backgroundColor: '#fff',
   },
   orderDetailsTitle: {
     fontSize: 24,
@@ -82,6 +111,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
     marginTop: 40,
+    color: '#333',
   },
   detailsBox: {
     flexDirection: 'row',
@@ -166,6 +196,40 @@ const styles = StyleSheet.create({
   calendar: {
     borderRadius: 10,
   },
+  summaryContainer: {
+    backgroundColor: '#F0F0F0',
+    padding: 15,
+    borderRadius: 10,
+    marginBottom: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  summaryTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    color: '#333',
+    textAlign: 'center',
+  },
+  summaryDetail: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    borderBottomWidth: 1,
+    borderBottomColor: '#DDD',
+    paddingVertical: 10,
+  },
+  summaryLabel: {
+    fontSize: 16,
+    color: '#555',
+    fontWeight: 'bold',
+  },
+  summaryValue: {
+    fontSize: 16,
+    color: '#333',
+  },
   proceedButton: {
     backgroundColor: '#5AE4A8',
     padding: 15,
@@ -178,4 +242,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PaymentScreen;
+export default Payment;

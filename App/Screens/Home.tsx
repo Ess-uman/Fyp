@@ -52,6 +52,17 @@ const HomeScreen: React.FC = () => {
     </TouchableOpacity>
   );
 
+  const handlePress = (item: typeof equipmentItems[0]) => {
+    const cost = parseFloat(item.cost.replace('GHS ', '').replace('/day', '')); // Convert cost to number
+    navigation.navigate('EquipmentDetailsScreen', {
+      selectedEquipment: { label: item.title },
+      selectedType: item.category,
+      cost: cost, // Pass the number cost
+      image: item.image,
+      category: item.category,
+    });
+  };
+
   return (
     <View style={styles.screen}>
       <View style={styles.topContainer}>
@@ -79,14 +90,7 @@ const HomeScreen: React.FC = () => {
           <TouchableOpacity
             key={item.id}
             style={styles.equipmentItem}
-            onPress={() => navigation.navigate('EquipmentDetail', {
-              title: item.title,
-              image: item.image,
-              category: item.category,
-              cost: item.cost,
-              hirerInfo: item.hirerInfo,
-              contact: item.contact,
-            })}
+            onPress={() => handlePress(item)}
           >
             <Image source={item.image} style={styles.equipmentImage} />
             <Text style={styles.equipmentTitle}>{item.title}</Text>
@@ -138,8 +142,7 @@ const styles = StyleSheet.create({
   },
   categoryItem: {
     alignItems: 'center',
-    marginRight: -5,
-    marginLeft: 20,
+    marginRight: 20,
   },
   categoryImage: {
     width: 60,

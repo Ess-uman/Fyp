@@ -13,7 +13,7 @@ export type RootStackParamList = {
   RentEquipmentScreen: undefined;
   CategoryEquipment: { category: string };
 
-    EquipmentDetail: {
+    EquipmentDetailsScreen: {
       title: string;
       image: any;
       category: string;

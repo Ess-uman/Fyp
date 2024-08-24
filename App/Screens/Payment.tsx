@@ -26,7 +26,6 @@ const Payment = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.screen}>
-      <Text style={styles.orderDetailsTitle}>Order Details</Text>
       <View style={styles.detailsBox}>
         <View style={styles.imageContainer}>
           <Image source={image} style={styles.image} />
@@ -105,14 +104,7 @@ const styles = StyleSheet.create({
     padding: 20,
     backgroundColor: '#fff',
   },
-  orderDetailsTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 20,
-    textAlign: 'center',
-    marginTop: 40,
-    color: '#333',
-  },
+
   detailsBox: {
     flexDirection: 'row',
     alignItems: 'center',

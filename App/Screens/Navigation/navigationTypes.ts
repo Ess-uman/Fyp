@@ -26,6 +26,14 @@ export type RootStackParamList = {
       };
       selectedType?: string;
     };
+    EquipmentDetail: {
+      title: string;
+      image: string;
+      category: string;
+      cost: string;
+      hirerInfo: string;
+      contact: string;
+    };
 
     RentEquipment:{
       startDate: string;

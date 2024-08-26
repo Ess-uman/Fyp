@@ -89,7 +89,7 @@ const EquipmentDetailsScreen: React.FC = () => {
         <Image source={image} style={styles.image} />
         <Text style={styles.title}>{title}</Text>
         <Text style={styles.category}>{category}</Text>
-        <Text style={styles.cost}>Cost to Rent: {cost}</Text>
+        <Text style={styles.cost}>Cost to Rent per day: {cost}</Text>
         <Text style={styles.hirerInfo}>Hirer's Info: {hirerInfo}</Text>
         <Text style={styles.contact}>Contact: {contact}</Text>
         <Text style={styles.location}>Location: {location}</Text>
@@ -218,13 +218,14 @@ const styles = StyleSheet.create({
   pickerLabel: {
     fontSize: 18,
     marginBottom: 5,
+
   },
   pickerContainer: {
-    padding: 10,
+    padding: 15,
     borderWidth: 1,
-    borderColor: '#DDD',
-    borderRadius: 5,
-    marginBottom: 20,
+    borderColor: '#333',
+    borderRadius: 10,
+    marginBottom: 10,
   },
   modalView: {
     flex: 1,
@@ -245,15 +246,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 20,
     alignItems: 'center',
-    elevation: 5,
+    elevation: 15,
   },
   option: {
-    padding: 10,
+    padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#DDD',
   },
   typeContainer: {
-    marginTop: 20,
+    marginTop: 10,
+    padding: -10,
   },
   typeList: {
     maxHeight: 150,
@@ -261,7 +263,7 @@ const styles = StyleSheet.create({
   typeOption: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   checkbox: {
     width: 20,
